@@ -116,7 +116,7 @@ int main(int argc, char **argv){
 	switch(mode){
 		case REGISTER:{
 			wait_for_sem(c_w_sem,"client write sem");
-			memset(shared, 0, sizeof(MyShm));
+			(void)memset(shared, 0, sizeof(MyShm));
 			shared->state = 0;
 			mystrcpy(shared->login,login,20);
 			mystrcpy(shared->pass,pass,20);
@@ -143,7 +143,7 @@ int main(int argc, char **argv){
 		break;
 		case LOGIN:{
 			wait_for_sem(c_w_sem,"client write sem");
-			memset(shared, 0, sizeof(MyShm));
+			(void)memset(shared, 0, sizeof(MyShm));
 			shared->state = 0;
 			mystrcpy(shared->login,login,20);
 			mystrcpy(shared->pass,pass,20);
@@ -156,7 +156,7 @@ int main(int argc, char **argv){
 			if(shared->state==0){
 				session = shared->sessId;
 				(void)fprintf(stdout,"logged in with id %d\n",session);
-				memset(shared, 0, sizeof(MyShm));
+				(void)memset(shared, 0, sizeof(MyShm));
 				shared->state = 0;
 				
 				c = sem_post(c_w_sem);
@@ -200,7 +200,7 @@ int main(int argc, char **argv){
 						int accepted = 0;
 						char mysecret[50];
 						while(!accepted){
-							memset(&mysecret[0], 0, sizeof(mysecret));
+							(void)memset(&mysecret[0], 0, sizeof(mysecret));
 							(void)fprintf(stdout,"%s","Please enter your new secret:");
 							char ch;
 							int count = 0;
@@ -328,7 +328,7 @@ static void handle_signal(int signo){
 }
 
 static void mystrcpy(char *dest,char *source,int size){
-	strncpy(dest,source,size-1);
+	(void)strncpy(dest,source,size-1);
 	dest[size]='\0';
 }
 

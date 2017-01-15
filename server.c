@@ -149,7 +149,7 @@ int main(int argc, char **argv){
 		switch(shared->command){
 			case REGISTER:
 				if(search_for(db,shared->login)!=NULL){
-					memset(shared, 0, sizeof(MyShm));
+					(void)memset(shared, 0, sizeof(MyShm));
 					shared->state = 1;
 				}else{
 					myDbObject *new;
@@ -160,7 +160,7 @@ int main(int argc, char **argv){
 					mystrcpy(new->pass,shared->pass,20);
 					new->secret[0]='\0';
 					insert(db,new);
-					memset(shared, 0, sizeof(MyShm));
+					(void)memset(shared, 0, sizeof(MyShm));
 					shared->state = 0;
 					(void)fprintf(stdout,"registered:%s\n",new->login);
 				}
@@ -184,16 +184,16 @@ int main(int argc, char **argv){
 							new->userid = rand();
 						}
 						insert(users,new);
-						memset(shared, 0, sizeof(MyShm));
+						(void)memset(shared, 0, sizeof(MyShm));
 						shared->sessId = new->userid;
 						shared->state = 0;
 						(void)fprintf(stdout,"logged in:%s with session id:%d\n",new->login,new->userid);
 					}else{
-						memset(shared, 0, sizeof(MyShm));
+						(void)memset(shared, 0, sizeof(MyShm));
 						shared->state = 1;
 					}
 				}else{
-					memset(shared, 0, sizeof(MyShm));
+					(void)memset(shared, 0, sizeof(MyShm));
 					shared->state = 1;
 				}
 				
@@ -208,11 +208,11 @@ int main(int argc, char **argv){
 				if(strcmp(sess->login,shared->login)==0){
 					myDbObject *userObj = (myDbObject*) search_for(db,shared->login);
 					mystrcpy(userObj->secret,shared->secret,50);
-					memset(shared, 0, sizeof(MyShm));
+					(void)memset(shared, 0, sizeof(MyShm));
 					shared->state = 0;
 					(void)fprintf(stdout,"user: %s wrote secret:%s\n",userObj->login,userObj->secret);
 				}else{
-					memset(shared, 0, sizeof(MyShm));
+					(void)memset(shared, 0, sizeof(MyShm));
 					shared->state = 1;
 				}
 				int c = sem_post(c_r_sem);
@@ -225,12 +225,12 @@ int main(int argc, char **argv){
 				session *sess = (session*) get_session(users,shared->sessId);
 				if(strcmp(sess->login,shared->login)==0){
 					myDbObject *userObj = (myDbObject*) search_for(db,shared->login);
-					memset(shared, 0, sizeof(MyShm));
+					(void)memset(shared, 0, sizeof(MyShm));
 					mystrcpy(shared->secret,userObj->secret,50);
 					shared->state = 0;
 					(void)fprintf(stdout,"user: %s read secret:%s\n",userObj->login,userObj->secret);
 				}else{
-					memset(shared, 0, sizeof(MyShm));
+					(void)memset(shared, 0, sizeof(MyShm));
 					shared->state = 1;
 				}
 				int c = sem_post(c_r_sem);
@@ -243,12 +243,12 @@ int main(int argc, char **argv){
 				session *sess = (session*) get_session(users,shared->sessId);
 				if(strcmp(sess->login,shared->login)==0){
 					drop_session(users,sess->userid);
-					memset(shared, 0, sizeof(MyShm));
+					(void)memset(shared, 0, sizeof(MyShm));
 					shared->state = 0;
 					(void)fprintf(stdout,"logged out user: %s session id:%d\n",sess->login,sess->userid);
 				}else{
 					(void)fprintf(stdout,"didnt log out user: %s expected login: %s\n",shared->login,sess->login);
-					memset(shared, 0, sizeof(MyShm));
+					(void)memset(shared, 0, sizeof(MyShm));
 					shared->state = 1;
 				}
 				int c = sem_post(c_r_sem);
@@ -270,7 +270,7 @@ int main(int argc, char **argv){
 }
 
 static void mystrcpy(char *dest,char *source,int size){
-	strncpy(dest,source,size-1);
+	(void)strncpy(dest,source,size-1);
 	dest[size]='\0';
 }
 
